@@ -1,0 +1,21 @@
+Jurgen Famula
+Game Programming 1
+Game Milestone 2
+Working title: "Blink"
+
+There have been many additions to the project since the previous milestone earlier this month. The Player movement system have been completed,
+now in addition to keyboard input there is also the main warp mechanic that will teleport the player from there current position to
+the position of the mouse pointer when the mouse is clicked, as long as it is within the range limit of the ability. There is still some work
+to done on the warp mechanic as I have yet to determine what the final range limit on the ability will be and I would like to implement a
+use limit or cool down to the ability to ensure that it does not become too powerful as an evasion tool. I was also unable to successfully
+implement the raycast during the warp, as such the ability does not kill enemy's that it passes through as it should. I implemented a test
+level consisting of two hazards, a small enemy ship prefab which spawns from an off camera spawner and descends down the screen in a zigzag
+pattern at a random speed bouncing off any object that it hits along the way, and a physics based asteroid obstacle prefab which also 
+spawns from an off screen spawner. Both spawners are activated by a series of triggers placed along the background. The spawners, player ship,
+and hazards are all children of the main camera which scrolls up along the background at a constant rate, while the spawning triggers are
+stationary children of the background and active the spawners as they move past the triggers. The player's ship, enemy ship, and asteroid 
+all have their final sprites, although the player ship does need a custom animation for the warp maneuver, and I have blocked out sprites for
+at least 12 more enemy ships and a few bosses. I have implemented triggers for enemy spawning and player death, although the death animation
+fails to play at random times despite the correct perimeters being activated when the player collides with an obstacle. I also need to fully
+implement the player collision with edges of the screen as right now, the play can either fly right off screen or is killed when she touches
+it.

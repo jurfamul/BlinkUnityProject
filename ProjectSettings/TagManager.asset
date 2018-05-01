@@ -13,11 +13,11 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - camera_and_background
+  - Enemies
+  - Obstacles
+  - Bullets
+  - Player
   - 
   - 
   - 
