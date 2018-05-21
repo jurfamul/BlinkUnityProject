@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - hazard
+  - enemy
+  - bullet
+  - obsatcle
+  - boss
   layers:
   - Default
   - TransparentFX
@@ -13,15 +18,15 @@ TagManager:
   - UI
   - 
   - 
-  - camera_and_background
+  - camera_top_bottom
+  - camera_sides
   - Enemies
   - Obstacles
   - Bullets
+  - Boss
   - Player
-  - 
-  - 
-  - 
-  - 
+  - background
+  - garbage_collector
   - 
   - 
   - 

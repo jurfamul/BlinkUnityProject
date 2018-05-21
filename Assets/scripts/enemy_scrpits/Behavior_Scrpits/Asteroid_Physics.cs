@@ -12,7 +12,7 @@ public class Asteroid_Physics : MonoBehaviour {
         asteriod = GetComponent<Rigidbody2D>();
         spawnPoint = transform.parent.transform.position;
         spawnPoint.x += Random.Range(-11, 11);
-        spawnPoint.y += 5f;
+        spawnPoint.y += 7f;
         spawnPoint.z += 1;
         transform.position = spawnPoint;
         float forceX;
@@ -35,11 +35,9 @@ public class Asteroid_Physics : MonoBehaviour {
                 forceX = Random.Range(100, 200);
             }
         }
-        float forceY = -50;
+        float forceY = -200;
         Vector3 startingForce = new Vector3(forceX, forceY, 0);
         asteriod.AddForce(startingForce);
-        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), GameObject.Find("Camera_Bound_Top").GetComponent<Collider2D>());
-        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), GameObject.Find("Camera_Bound_Bottom").GetComponent<Collider2D>());
     }
 	
 	// Update is called once per frame

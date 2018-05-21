@@ -51,10 +51,14 @@ public class Player_Control : MonoBehaviour {
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        animator.SetBool("isDead", true);
-        Destroy(gameObject, 1.2f);
+        if (collision.gameObject.CompareTag("enemy") || collision.gameObject.CompareTag("bullet") || collision.gameObject.CompareTag("obsatcle")
+            || collision.gameObject.CompareTag("boss"))
+        {
+            animator.SetBool("isDead", true);
+            Destroy(gameObject, 1.2f);
+        }
     }
 
     private void Warp()
@@ -65,17 +69,26 @@ public class Player_Control : MonoBehaviour {
             warpPoint.z = 0;
 
             float warpDistance = Mathf.Abs(Vector3.Distance(transform.position, warpPoint));
-            print(warpDistance);
             if (warpDistance <= warpRadius)
             {
-                Debug.DrawLine(transform.position, warpPoint, Color.red, 60f);
-                RaycastHit warpHit;
-                if (Physics.Linecast(transform.position, warpPoint, out warpHit))
+                GetComponent<Collider2D>().enabled = false;
+                Vector2 playerPosition = new Vector2(transform.position.x, transform.position.y);
+                Vector2 warpPoint2D = new Vector2(warpPoint.x, warpPoint.y);
+                Vector2 warpDirection = warpPoint2D - playerPosition;
+                RaycastHit2D[] warpHits = Physics2D.RaycastAll(playerPosition, warpDirection, warpDistance);
+                Debug.DrawRay(transform.position, warpDirection, Color.red, 2f);
+
+                if (warpHits.Length != 0)
                 {
-                    print("warpHit");
-                    // raycast collition is not functioning properly. Need to work on understanding collitions.
-                    Destroy(warpHit.collider.gameObject);
+                    foreach (RaycastHit2D hit in warpHits)
+                    {
+                        if (hit.collider.gameObject.CompareTag("enemy"))
+                        {
+                            Destroy(hit.collider.gameObject);
+                        }
+                    }
                 }
+                gameObject.GetComponent<AudioSource>().Play();
                 transform.position = warpPoint;
                 GetComponent<Collider2D>().enabled = true;
             }

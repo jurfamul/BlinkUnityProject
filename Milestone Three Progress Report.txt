@@ -1,0 +1,20 @@
+Jurgen Famula
+Game Programming 1
+Game Milestone 3
+Working title: "Blink"
+
+
+Sense the last update, I have added a start screen to the game that launches the first level when the player presses the start button
+on the screen. In the main level, I have added two new enemy types that are incomplete at this time do to the loss of a several scripts
+after a major error caused my computer to blue screen. The first enemy makes use of two cooruties, the first controls it's movement and
+the second is a timer that tells the enemy to fire an instance of the bullet prefab three times every second. I have added background 
+music to the first level and included sound effects on the player ship and the enemies that trigger when they shoot or warp. I added a UI
+layer to the first level that prints "game over" when the player dies and "level complete" when the player beats the level. I have a 
+coorutine that will transition the player to the next level if they beat level 1 or sends them back to the title screen if they die, but
+right now both outcomes lead back the title screen as the enemies that will populate the second level are broken right now. I did not have
+to change my art or animations as I am satisfied with quality of the sprites I am currently using and the sprite sheet contain may more
+sprites which I can uses to quickly create more enemy types once I am able to repare the broken bullet code. I have also made several small
+tweeks to the behaivors of several pre-existing game objects for the previous milestone to improve the overall gameplay experince, inlcuding
+adding additional collision layers and tags to allow certain objects to ignore collisions and give me more control over the game's
+behaivor when a collision occurs and fixing the player's blink mechanic which allows the player to destroy enemies without effecting
+objects and enemy bullets.
