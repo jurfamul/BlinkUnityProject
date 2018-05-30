@@ -32,22 +32,22 @@ public class human_enemy_0_pathing : MonoBehaviour {
         if (!animator.GetBool("isDead"))
         {
             float x = 0;
-            if (transform.position.x < 10.4 && direction)
+            if (transform.position.x < 8.3f && direction)
             {
                 ship.flipX = false ;
                 x = -speedX * Time.deltaTime;
             }
-            else if (transform.position.x >= 10.4f && direction)
+            else if (transform.position.x >= 8.3f && direction)
             {
                 ship.flipX = true;
                 x = speedX * Time.deltaTime;
                 direction = false;
             }
-            else if (transform.position.x > - 10.4 && !direction)
+            else if (transform.position.x > -8.3f && !direction)
             {
                 x = speedX * Time.deltaTime;
             }
-            else if (transform.position.x <= -10.4 && !direction)
+            else if (transform.position.x <= -8.3 && !direction)
             {
                 ship.flipX = false;
                 x = -speedX * Time.deltaTime;

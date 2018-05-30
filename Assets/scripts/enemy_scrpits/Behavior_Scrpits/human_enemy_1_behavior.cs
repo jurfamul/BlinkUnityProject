@@ -56,12 +56,10 @@ public class human_enemy_1_behavior : MonoBehaviour {
 
     private void Shoot()
     {
-        GameObject tempBullet0 = Instantiate<GameObject>(bullet);
-        tempBullet0.transform.parent = gameObject.transform;
-        tempBullet0.transform.position = transform.position;
-        GameObject tempBullet1 = Instantiate<GameObject>(bullet);
-        tempBullet1.transform.parent = gameObject.transform;
-        tempBullet1.transform.position = transform.position;
+        GameObject tempBullet0 = Instantiate<GameObject>(bullet, transform, false);
+        tempBullet0.transform.position = new Vector3(tempBullet0.transform.position.x - 0.1f, tempBullet0.transform.position.y,
+            tempBullet0.transform.position.z);
+        GameObject tempBullet1 = Instantiate<GameObject>(bullet, transform, false);
         gameObject.GetComponent<AudioSource>().Play();
          
     }
@@ -78,16 +76,20 @@ public class human_enemy_1_behavior : MonoBehaviour {
             foreach (Vector3 point in waypoints)
             {
                 Debug.Log("pathing to: " + point);
-                while (transform.position != point)
+                Debug.DrawLine(transform.position, point, Color.white);
+                Vector3 init = transform.position;
+                float step = 0;
+                Vector3 desination = new Vector3(point.x, point.y, -1.0f);
+                while (transform.position != desination)
                 {
-                    transform.position = Vector3.MoveTowards(transform.localPosition, point, speed);
-                    Vector3 position = transform.localPosition;
-                    position.z = 9;
-                    transform.localPosition = position;
+                    step += speed * Time.deltaTime;
+                    transform.position = Vector3.MoveTowards(init, desination, step);
+                    transform.position = new Vector3(transform.position.x, transform.position.y, -1.0f);
+                    Debug.Log(transform.position);
                     yield return null;
                 }
             }
-            yield return new WaitForSeconds(1);
+            yield return null;
         }
     }
 

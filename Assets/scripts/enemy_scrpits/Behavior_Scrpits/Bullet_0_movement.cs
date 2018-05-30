@@ -14,8 +14,7 @@ public class Bullet_0_movement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         float step = speed * Time.deltaTime;
-        float x = transform.position.x + step;
-        transform.Translate(x, 0, 0);
+        transform.Translate(step, 0, 0, Space.Self);
 	}
 
     private void OnCollisionEnter2D(Collision2D collision)
