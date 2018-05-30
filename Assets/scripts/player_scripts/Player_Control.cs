@@ -7,12 +7,18 @@ public class Player_Control : MonoBehaviour {
     Animator animator;
     SpriteRenderer playerShip;
     public float movementSpeed;
-    public float warpRadius;
+    public float blinkRadius;
+    public float blinkCoolDown;
+    public int maxBlinks;
+    private int currentBlinks;
+    private float endTime;
 
 	// Use this for initialization
 	void Start () {
         animator = GetComponent<Animator>();
         playerShip = GetComponent<SpriteRenderer>();
+        currentBlinks = maxBlinks;
+        StartCoroutine(blinkRecharge());
 	}
 	
 	// Update is called once per frame
@@ -65,38 +71,95 @@ public class Player_Control : MonoBehaviour {
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 warpPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            warpPoint.z = 0;
-
-            float warpDistance = Mathf.Abs(Vector3.Distance(transform.position, warpPoint));
-            if (warpDistance <= warpRadius)
+            if (currentBlinks > 0)
             {
-                GetComponent<Collider2D>().enabled = false;
-                Vector2 playerPosition = new Vector2(transform.position.x, transform.position.y);
-                Vector2 warpPoint2D = new Vector2(warpPoint.x, warpPoint.y);
-                Vector2 warpDirection = warpPoint2D - playerPosition;
-                RaycastHit2D[] warpHits = Physics2D.RaycastAll(playerPosition, warpDirection, warpDistance);
-                Debug.DrawRay(transform.position, warpDirection, Color.red, 2f);
+                Vector3 warpPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                warpPoint.z = 0;
 
-                if (warpHits.Length != 0)
+                float warpDistance = Mathf.Abs(Vector3.Distance(transform.position, warpPoint));
+                if (warpDistance <= blinkRadius)
                 {
-                    foreach (RaycastHit2D hit in warpHits)
+                    GetComponent<Collider2D>().enabled = false;
+                    Vector2 playerPosition = new Vector2(transform.position.x, transform.position.y);
+                    Vector2 warpPoint2D = new Vector2(warpPoint.x, warpPoint.y);
+                    Vector2 warpDirection = warpPoint2D - playerPosition;
+                    RaycastHit2D[] warpHits = Physics2D.RaycastAll(playerPosition, warpDirection, warpDistance);
+                    Debug.DrawRay(transform.position, warpDirection, Color.red, 2f);
+
+                    if (warpHits.Length != 0)
                     {
-                        if (hit.collider.gameObject.CompareTag("enemy"))
+                        foreach (RaycastHit2D hit in warpHits)
                         {
-                            Destroy(hit.collider.gameObject);
+                            if (hit.collider.gameObject.CompareTag("enemy"))
+                            {
+                                Destroy(hit.collider.gameObject);
+                            }
                         }
                     }
+                    gameObject.GetComponent<AudioSource>().Play();
+                    transform.position = warpPoint;
+                    GetComponent<Collider2D>().enabled = true;
+                    currentBlinks--;
                 }
-                gameObject.GetComponent<AudioSource>().Play();
-                transform.position = warpPoint;
-                GetComponent<Collider2D>().enabled = true;
+                else 
+                {
+                    print("Can not warp to location (" + warpPoint.x + ", " + warpPoint.y + ").");
+                    StartCoroutine(flashColor(Color.blue));
+                }
             }
-            else if (Vector3.Distance(transform.position, warpPoint) <= warpRadius)
+            else
             {
-                print("Can not warp to location (" + warpPoint.x + ", " + warpPoint.y + ").");
+                Debug.Log("Blink on cooldown");
+                StartCoroutine(flashColor(Color.red));
             }
-            
         }
+    }
+
+    protected virtual IEnumerator blinkRecharge()
+    {
+        while (true)
+        {
+            if (currentBlinks != maxBlinks)
+            {
+                // calculate the end time based on the duration
+                endTime = Time.time + blinkCoolDown;
+
+                // now loop until the current elapsed time is greater than the end time
+                while (Time.time < endTime)
+                {
+                    yield return null;
+                }
+
+                currentBlinks++;
+                yield return null;
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+    }
+
+    protected virtual IEnumerator flashColor(Color color)
+    {
+        float endFlash = Time.time + 1;
+        Color32 flashingColor = color;
+        bool isColor = false;
+        while (Time.time < endFlash)
+        {
+            if (!isColor)
+            {
+                playerShip.material.color = flashingColor;
+                isColor = true;
+                yield return new WaitForSeconds(0.06666666f);
+            }
+            else
+            {
+                playerShip.material.color = Color.white;
+                isColor = false;
+                yield return new WaitForSeconds(0.06666666f);
+            }
+        }
+        playerShip.material.color = Color.white;
     }
 }

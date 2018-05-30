@@ -46,8 +46,4 @@ public class Asteroid_Physics : MonoBehaviour {
 		
 	}
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        asteriod.velocity *= 0.9f;        
-    }
 }

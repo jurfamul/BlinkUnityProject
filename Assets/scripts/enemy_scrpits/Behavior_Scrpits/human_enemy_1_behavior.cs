@@ -56,7 +56,7 @@ public class human_enemy_1_behavior : MonoBehaviour {
 
     private void Shoot()
     {
-        GameObject tempBullet0 = Instantiate<GameObject>(bullet, transform, false);
+        GameObject tempBullet0 = Instantiate<GameObject>(bullet, transform, true);
         tempBullet0.transform.position = new Vector3(tempBullet0.transform.position.x - 0.1f, tempBullet0.transform.position.y,
             tempBullet0.transform.position.z);
         GameObject tempBullet1 = Instantiate<GameObject>(bullet, transform, false);
