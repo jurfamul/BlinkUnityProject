@@ -18,6 +18,7 @@ public class Scroll_Camera : MonoBehaviour {
 	void Start () {
         startingPoint = transform.position;
         topCollider = transform.Find("Camera_Bounds_Top").GetComponent<Collider2D>();
+        gameObject.GetComponent<AudioSource>().mute = false;
         isGameOver = false;
         text.text = "";
 	}
@@ -34,7 +35,9 @@ public class Scroll_Camera : MonoBehaviour {
         {
             text.color = Color.blue;
             text.text = "Level Complete";
+            
             gameObject.GetComponent<AudioSource>().mute = true;
+            gameObject.GetComponent<AudioSource>().Stop();
             StartCoroutine("LoadNextScene");
         }
         else if (!isGameOver && transform.Find("Player_Ship").GetComponent<Animator>().GetBool("isDead"))
@@ -42,8 +45,8 @@ public class Scroll_Camera : MonoBehaviour {
             text.color = Color.red;
             text.text = "Game Over";
             gameObject.GetComponent<AudioSource>().mute = true;
+            gameObject.GetComponent<AudioSource>().Stop();
             isGameOver = true;
-            StartCoroutine("LoadNextScene");
         }
 	}
 

@@ -1,24 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player_Control : MonoBehaviour {
 
     Animator animator;
     SpriteRenderer playerShip;
+    public Text[] counters;
     public float movementSpeed;
     public float blinkRadius;
     public float blinkCoolDown;
     public int maxBlinks;
+    public int points;
     private int currentBlinks;
-    private float endTime;
+    private int lives;
+    private float flashTime;
+    private bool isDead;
 
-	// Use this for initialization
-	void Start () {
+        // Use this for initialization
+    void Start () {
         animator = GetComponent<Animator>();
         playerShip = GetComponent<SpriteRenderer>();
         currentBlinks = maxBlinks;
-        StartCoroutine(blinkRecharge());
+        StartCoroutine(BlinkRecharge());
+        StartCoroutine(UpdateUI());
+        lives = gameObject.GetComponentInParent<Player_Singleton>().lives;
+        isDead = false;
 	}
 	
 	// Update is called once per frame
@@ -62,8 +71,52 @@ public class Player_Control : MonoBehaviour {
         if (collision.gameObject.CompareTag("enemy") || collision.gameObject.CompareTag("bullet") || collision.gameObject.CompareTag("obsatcle")
             || collision.gameObject.CompareTag("boss"))
         {
-            animator.SetBool("isDead", true);
-            Destroy(gameObject, 1.2f);
+            if (!isDead)
+            {
+                isDead = true;
+                gameObject.GetComponent<Collider2D>().enabled = false;
+                animator.Play("player_death");
+                gameObject.GetComponents<AudioSource>()[1].Play();
+                gameObject.GetComponentInParent<Player_Singleton>().WasHit();
+                lives = gameObject.GetComponentInParent<Player_Singleton>().lives;
+            }
+            /*if (lives == 0)
+            {
+                StartCoroutine("loadStartScene");
+                Destroy(gameObject, 1.2f);
+            }
+            else
+            {
+                lives--;
+                StartCoroutine("reloadScene");
+            }*/
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("enemy") || collision.gameObject.CompareTag("bullet") || collision.gameObject.CompareTag("obsatcle")
+            || collision.gameObject.CompareTag("boss"))
+        {
+            if (!isDead)
+            {
+                isDead = true;
+                gameObject.GetComponent<Collider2D>().enabled = false;
+                animator.Play("player_death");
+                gameObject.GetComponents<AudioSource>()[1].Play();
+                gameObject.GetComponentInParent<Player_Singleton>().WasHit();
+                lives = gameObject.GetComponentInParent<Player_Singleton>().lives;
+            }
+            /*if (lives == 0)
+            {
+                StartCoroutine("loadStartScene");
+                Destroy(gameObject, 1.2f);
+            }
+            else
+            {
+                lives--;
+                StartCoroutine("reloadScene");
+            } */
         }
     }
 
@@ -92,40 +145,42 @@ public class Player_Control : MonoBehaviour {
                         {
                             if (hit.collider.gameObject.CompareTag("enemy"))
                             {
-                                Destroy(hit.collider.gameObject);
+                                hit.collider.gameObject.GetComponent<Animator>().SetBool("isDead", true);
+                                hit.collider.gameObject.GetComponent<Collider2D>().enabled = false;
+                                Destroy(hit.collider.gameObject, 1.2f);
                             }
                         }
                     }
-                    gameObject.GetComponent<AudioSource>().Play();
+                    gameObject.GetComponents<AudioSource>()[0].Play();
                     transform.position = warpPoint;
                     GetComponent<Collider2D>().enabled = true;
                     currentBlinks--;
                 }
                 else 
                 {
-                    print("Can not warp to location (" + warpPoint.x + ", " + warpPoint.y + ").");
-                    StartCoroutine(flashColor(Color.blue));
+                    Debug.Log("Can not warp to location (" + warpPoint.x + ", " + warpPoint.y + ").");
+                    StartCoroutine(FlashColor(Color.blue));
                 }
             }
             else
             {
                 Debug.Log("Blink on cooldown");
-                StartCoroutine(flashColor(Color.red));
+                StartCoroutine(FlashColor(Color.red));
             }
         }
     }
 
-    protected virtual IEnumerator blinkRecharge()
+    protected virtual IEnumerator BlinkRecharge()
     {
         while (true)
         {
             if (currentBlinks != maxBlinks)
             {
                 // calculate the end time based on the duration
-                endTime = Time.time + blinkCoolDown;
+                flashTime = Time.time + blinkCoolDown;
 
                 // now loop until the current elapsed time is greater than the end time
-                while (Time.time < endTime)
+                while (Time.time < flashTime)
                 {
                     yield return null;
                 }
@@ -140,7 +195,7 @@ public class Player_Control : MonoBehaviour {
         }
     }
 
-    protected virtual IEnumerator flashColor(Color color)
+    protected virtual IEnumerator FlashColor(Color color)
     {
         float endFlash = Time.time + 1;
         Color32 flashingColor = color;
@@ -161,5 +216,41 @@ public class Player_Control : MonoBehaviour {
             }
         }
         playerShip.material.color = Color.white;
+    }
+
+    /*public IEnumerator reloadScene()
+    {
+        float endTime = Time.time + loadTime;
+
+        while (Time.time < endTime)
+        {
+            yield return null;
+        }
+
+        SceneManager.LoadSceneAsync("Level 1");
+    }
+
+    public IEnumerator loadStartScene()
+    {
+        float endTime = Time.time + loadTime;
+
+        while (Time.time < endTime)
+        {
+            yield return null;
+        }
+
+        SceneManager.LoadSceneAsync("Start_Screen");
+        SceneManager.UnloadSceneAsync("Level 1");
+    }*/
+
+    public IEnumerator UpdateUI()
+    {
+        while (true)
+        {
+            counters[0].text = "Lives: " + lives;
+            counters[1].text = "Blinks: " + currentBlinks;
+            counters[2].text = "Points:" + points;
+            yield return new WaitForSeconds(0.05f);
+        }
     }
 }

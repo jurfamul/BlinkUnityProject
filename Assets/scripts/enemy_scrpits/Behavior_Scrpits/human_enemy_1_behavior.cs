@@ -21,7 +21,27 @@ public class human_enemy_1_behavior : MonoBehaviour {
         path = StartCoroutine(FollowWaypoints());
         StartTimer();
 	}
-	
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            gameObject.GetComponent<Collider2D>().enabled = false;
+            animator.Play("death_animation");
+            Destroy(gameObject, 1.2f);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            gameObject.GetComponent<Collider2D>().enabled = false;
+            animator.Play("death_animation");
+            Destroy(gameObject, 1.2f);
+        }
+    }
+
     public virtual void StartTimer()
     {
         StartCoroutine(StartCountdown());

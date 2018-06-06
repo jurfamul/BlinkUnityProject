@@ -24,4 +24,12 @@ public class Bullet_0_movement : MonoBehaviour {
             Destroy(gameObject);
         }
     }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("obsatcle") || collision.gameObject.CompareTag("Player"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

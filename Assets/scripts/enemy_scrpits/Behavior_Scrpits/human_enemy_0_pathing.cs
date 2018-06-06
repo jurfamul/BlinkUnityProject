@@ -65,7 +65,23 @@ public class human_enemy_0_pathing : MonoBehaviour {
     {
         if (collision.gameObject.Equals(GameObject.Find("Player_Ship")))
         {
-            animator.SetBool("isDead", true);
+            gameObject.GetComponent<Collider2D>().enabled = false;
+            animator.Play("death_animation");
+            Destroy(gameObject, 1.2f);
+        }
+        else if (!collision.gameObject.Equals(GameObject.Find("Player_Ship")))
+        {
+            direction = !direction;
+            speedY += Random.Range(0, 2);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.Equals(GameObject.Find("Player_Ship")))
+        {
+            gameObject.GetComponent<Collider2D>().enabled = false;
+            animator.Play("death_animation");
             Destroy(gameObject, 1.2f);
         }
         else if (!collision.gameObject.Equals(GameObject.Find("Player_Ship")))

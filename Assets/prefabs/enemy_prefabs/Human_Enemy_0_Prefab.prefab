@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 61452549722694490}
   - component: {fileID: 50432525302400498}
   - component: {fileID: 114701028977067874}
+  - component: {fileID: 114931635747965510}
   m_Layer: 9
   m_Name: Human_Enemy_0_Prefab
   m_TagString: enemy
@@ -119,6 +120,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 0
+--- !u!114 &114931635747965510
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1402409810207582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6113cbf6fb10a24391a2cf3cf5884bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  points: 500
 --- !u!212 &212092129017078050
 SpriteRenderer:
   m_ObjectHideFlags: 1
