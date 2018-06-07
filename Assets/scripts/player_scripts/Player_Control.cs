@@ -8,12 +8,13 @@ public class Player_Control : MonoBehaviour {
 
     Animator animator;
     SpriteRenderer playerShip;
+    public GameObject sceneManager;
     public Text[] counters;
     public float movementSpeed;
     public float blinkRadius;
     public float blinkCoolDown;
     public int maxBlinks;
-    public int points;
+    private int points;
     private int currentBlinks;
     private int lives;
     private float flashTime;
@@ -26,13 +27,14 @@ public class Player_Control : MonoBehaviour {
         currentBlinks = maxBlinks;
         StartCoroutine(BlinkRecharge());
         StartCoroutine(UpdateUI());
-        lives = gameObject.GetComponentInParent<Player_Singleton>().lives;
+        lives = sceneManager.GetComponent<Player_Singleton>().lives;
+        points = sceneManager.GetComponent<Player_Singleton>().getPoints();
         isDead = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (!animator.GetBool("isDead"))
+        if (!isDead)
         {
             float horizontalDirection = Input.GetAxis("Horizontal");
             if (Input.GetButtonDown("Horizontal"))
@@ -73,22 +75,17 @@ public class Player_Control : MonoBehaviour {
         {
             if (!isDead)
             {
-                isDead = true;
-                gameObject.GetComponent<Collider2D>().enabled = false;
-                animator.Play("player_death");
-                gameObject.GetComponents<AudioSource>()[1].Play();
-                gameObject.GetComponentInParent<Player_Singleton>().WasHit();
-                lives = gameObject.GetComponentInParent<Player_Singleton>().lives;
+                KillPlayer();
             }
             /*if (lives == 0)
             {
-                StartCoroutine("loadStartScene");
+                StartCoroutine("LoadStartScene");
                 Destroy(gameObject, 1.2f);
             }
             else
             {
                 lives--;
-                StartCoroutine("reloadScene");
+                StartCoroutine("ReloadScene");
             }*/
         }
     }
@@ -100,22 +97,17 @@ public class Player_Control : MonoBehaviour {
         {
             if (!isDead)
             {
-                isDead = true;
-                gameObject.GetComponent<Collider2D>().enabled = false;
-                animator.Play("player_death");
-                gameObject.GetComponents<AudioSource>()[1].Play();
-                gameObject.GetComponentInParent<Player_Singleton>().WasHit();
-                lives = gameObject.GetComponentInParent<Player_Singleton>().lives;
+                KillPlayer();
             }
             /*if (lives == 0)
             {
-                StartCoroutine("loadStartScene");
+                StartCoroutine("LoadStartScene");
                 Destroy(gameObject, 1.2f);
             }
             else
             {
                 lives--;
-                StartCoroutine("reloadScene");
+                StartCoroutine("ReloadScene");
             } */
         }
     }
@@ -145,9 +137,13 @@ public class Player_Control : MonoBehaviour {
                         {
                             if (hit.collider.gameObject.CompareTag("enemy"))
                             {
-                                hit.collider.gameObject.GetComponent<Animator>().SetBool("isDead", true);
-                                hit.collider.gameObject.GetComponent<Collider2D>().enabled = false;
-                                Destroy(hit.collider.gameObject, 1.2f);
+                                GameObject enemy = hit.collider.gameObject;
+                                enemy.SendMessage("EndCoroutines");
+                                enemy.GetComponent<Collider2D>().enabled = false;
+                                enemy.GetComponent<Animator>().Play("death_animation");
+                                points = sceneManager.GetComponent<Player_Singleton>().addPoints(
+                                    enemy.GetComponent<Enemy_Points_value>().points);
+                                Destroy(enemy, 1.2f);
                             }
                         }
                     }
@@ -168,6 +164,18 @@ public class Player_Control : MonoBehaviour {
                 StartCoroutine(FlashColor(Color.red));
             }
         }
+    }
+
+    private void KillPlayer()
+    {
+        isDead = true;
+        StopCoroutine("BlinkRecharge");
+        StopCoroutine("FlashColor");
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        animator.Play("player_death");
+        gameObject.GetComponents<AudioSource>()[1].Play();
+        sceneManager.GetComponent<Player_Singleton>().WasHit();
+        lives = sceneManager.GetComponent<Player_Singleton>().lives;
     }
 
     protected virtual IEnumerator BlinkRecharge()
@@ -218,7 +226,7 @@ public class Player_Control : MonoBehaviour {
         playerShip.material.color = Color.white;
     }
 
-    /*public IEnumerator reloadScene()
+    /*public IEnumerator ReloadScene()
     {
         float endTime = Time.time + loadTime;
 
@@ -230,7 +238,7 @@ public class Player_Control : MonoBehaviour {
         SceneManager.LoadSceneAsync("Level 1");
     }
 
-    public IEnumerator loadStartScene()
+    public IEnumerator LoadStartScene()
     {
         float endTime = Time.time + loadTime;
 
@@ -247,10 +255,17 @@ public class Player_Control : MonoBehaviour {
     {
         while (true)
         {
-            counters[0].text = "Lives: " + lives;
-            counters[1].text = "Blinks: " + currentBlinks;
-            counters[2].text = "Points:" + points;
-            yield return new WaitForSeconds(0.05f);
+            if (counters[0] && counters[1] && counters[2] != null)
+            {
+                counters[0].text = "Lives: " + lives;
+                counters[1].text = "Blinks: " + currentBlinks;
+                counters[2].text = "Points:" + points;
+                yield return new WaitForSeconds(0.05f);
+            }
+            else
+            {
+                yield return null;
+            }
         }
     }
 }

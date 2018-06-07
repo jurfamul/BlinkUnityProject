@@ -16,7 +16,8 @@ public class Scroll_Camera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        startingPoint = transform.position;
+        startingPoint = new Vector3(0, 0, -10);
+        transform.position = startingPoint;
         topCollider = transform.Find("Camera_Bounds_Top").GetComponent<Collider2D>();
         gameObject.GetComponent<AudioSource>().mute = false;
         isGameOver = false;
@@ -35,8 +36,6 @@ public class Scroll_Camera : MonoBehaviour {
         {
             text.color = Color.blue;
             text.text = "Level Complete";
-            
-            gameObject.GetComponent<AudioSource>().mute = true;
             gameObject.GetComponent<AudioSource>().Stop();
             StartCoroutine("LoadNextScene");
         }
@@ -44,7 +43,6 @@ public class Scroll_Camera : MonoBehaviour {
         {
             text.color = Color.red;
             text.text = "Game Over";
-            gameObject.GetComponent<AudioSource>().mute = true;
             gameObject.GetComponent<AudioSource>().Stop();
             isGameOver = true;
         }

@@ -8,7 +8,8 @@ public class Player_Singleton : MonoBehaviour {
 
     private static Player_Singleton playerSingleton;
     public int lives;
-    private float loadTime;
+    public int points;
+    public float loadTime;
 
     public static Player_Singleton Instance
     {
@@ -21,7 +22,6 @@ public class Player_Singleton : MonoBehaviour {
         if (playerSingleton == null)
         {
             playerSingleton = this;
-            loadTime = 1.3f;
             // the whole point of making a singleton is to create something that can't be destroyed
             DontDestroyOnLoad(gameObject);
         }
@@ -40,41 +40,16 @@ public class Player_Singleton : MonoBehaviour {
         {
             lives = 0;
         }
-
-        if (lives == 0)
-        {
-            StartCoroutine("LoadStartScene");
-            Destroy(gameObject, 1.2f);
-        }
-        else
-        {
-            lives--;
-            StartCoroutine("ReloadScene");
-        }
     }
 
-    public IEnumerator ReloadScene()
+    public int addPoints(int p)
     {
-        float endTime = Time.time + loadTime;
-
-        while (Time.time < endTime)
-        {
-            yield return null;
-        }
-
-        SceneManager.LoadSceneAsync("Level 1");
+        points += p;
+        return points;
     }
 
-    public IEnumerator LoadStartScene()
+    public int getPoints()
     {
-        float endTime = Time.time + loadTime;
-
-        while (Time.time < endTime)
-        {
-            yield return null;
-        }
-
-        SceneManager.LoadSceneAsync("Start_Screen");
-        SceneManager.UnloadSceneAsync("Level 1");
+        return points;
     }
 }

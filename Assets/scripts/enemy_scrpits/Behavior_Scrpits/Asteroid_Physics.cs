@@ -11,12 +11,12 @@ public class Asteroid_Physics : MonoBehaviour {
 	void Start () {
         asteriod = GetComponent<Rigidbody2D>();
         spawnPoint = transform.parent.transform.position;
-        spawnPoint.x += Random.Range(-11, 11);
+        spawnPoint.x += Random.Range(-5, 11);
         spawnPoint.y += 7f;
         spawnPoint.z += 1;
         transform.position = spawnPoint;
         float forceX;
-        if (Random.Range(0, 2) == 0)
+        if (spawnPoint.x < 0)
         {
             forceX = 50f;
         }
@@ -26,7 +26,7 @@ public class Asteroid_Physics : MonoBehaviour {
         }
         if (Random.Range(0, 4) < 1)
         {
-            if (Random.Range(0, 2) == 0)
+            if (spawnPoint.x < 0)
             {
                 forceX = Random.Range(-200, -100);
             }
@@ -35,7 +35,7 @@ public class Asteroid_Physics : MonoBehaviour {
                 forceX = Random.Range(100, 200);
             }
         }
-        float forceY = -200;
+        float forceY = -300;
         Vector3 startingForce = new Vector3(forceX, forceY, 0);
         asteriod.AddForce(startingForce);
     }

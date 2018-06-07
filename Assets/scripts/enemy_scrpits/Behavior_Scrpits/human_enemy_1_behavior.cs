@@ -10,6 +10,7 @@ public class human_enemy_1_behavior : MonoBehaviour {
     public GameObject bullet;
     public float shots;
     private float endTime;
+    private bool isDead;
     Animator animator;
     SpriteRenderer sprite;
    
@@ -19,6 +20,7 @@ public class human_enemy_1_behavior : MonoBehaviour {
         animator = gameObject.GetComponent<Animator>();
         sprite = gameObject.GetComponent<SpriteRenderer>();
         path = StartCoroutine(FollowWaypoints());
+        isDead = false;
         StartTimer();
 	}
 
@@ -26,9 +28,7 @@ public class human_enemy_1_behavior : MonoBehaviour {
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            gameObject.GetComponent<Collider2D>().enabled = false;
-            animator.Play("death_animation");
-            Destroy(gameObject, 1.2f);
+            KillEnemy();
         }
     }
 
@@ -36,9 +36,7 @@ public class human_enemy_1_behavior : MonoBehaviour {
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            gameObject.GetComponent<Collider2D>().enabled = false;
-            animator.Play("death_animation");
-            Destroy(gameObject, 1.2f);
+            KillEnemy();
         }
     }
 
@@ -82,6 +80,20 @@ public class human_enemy_1_behavior : MonoBehaviour {
         GameObject tempBullet1 = Instantiate<GameObject>(bullet, transform, false);
         gameObject.GetComponent<AudioSource>().Play();
          
+    }
+
+    private void KillEnemy()
+    {
+        StopAllCoroutines();
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        animator.Play("death_animation");
+        isDead = true;
+        Destroy(gameObject, 1.2f);
+    }
+
+    public void EndCoroutines()
+    {
+        StopAllCoroutines();
     }
 
     public virtual void StopPatroling()

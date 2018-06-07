@@ -10,6 +10,7 @@ public class human_enemy_0_pathing : MonoBehaviour {
     float speedX;
     float speedY;
     public bool direction;
+    private bool isDead;
 
 	// Use this for initialization
 	void Start () {
@@ -17,7 +18,7 @@ public class human_enemy_0_pathing : MonoBehaviour {
         ship = GetComponent<SpriteRenderer>();
         spawnPoint = transform.parent.transform.position;
         spawnPoint.x += -12.3f;
-        spawnPoint.y += 6.25f;
+        spawnPoint.y += 6.75f;
         spawnPoint.z += 10;
         transform.position = spawnPoint;
         speedX = Random.Range(5, 10);
@@ -25,11 +26,12 @@ public class human_enemy_0_pathing : MonoBehaviour {
         animator.SetBool("isBanking", true);
         animator.SetBool("isHazard", true);
         direction = true;
+        isDead = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (!animator.GetBool("isDead"))
+        if (!isDead)
         {
             float x = 0;
             if (transform.position.x < 8.3f && direction)
@@ -67,6 +69,7 @@ public class human_enemy_0_pathing : MonoBehaviour {
         {
             gameObject.GetComponent<Collider2D>().enabled = false;
             animator.Play("death_animation");
+            isDead = true;
             Destroy(gameObject, 1.2f);
         }
         else if (!collision.gameObject.Equals(GameObject.Find("Player_Ship")))
@@ -82,12 +85,13 @@ public class human_enemy_0_pathing : MonoBehaviour {
         {
             gameObject.GetComponent<Collider2D>().enabled = false;
             animator.Play("death_animation");
+            isDead = true;
             Destroy(gameObject, 1.2f);
         }
-        else if (!collision.gameObject.Equals(GameObject.Find("Player_Ship")))
-        {
-            direction = !direction;
-            speedY += Random.Range(0, 2);
-        }
+    }
+
+    public void EndCoroutines()
+    {
+        // this method is empty as this enemy has no coroutines. This method was added for error handling perposes.
     }
 }
