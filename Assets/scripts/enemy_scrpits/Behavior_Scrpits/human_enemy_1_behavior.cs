@@ -82,18 +82,13 @@ public class human_enemy_1_behavior : MonoBehaviour {
          
     }
 
-    private void KillEnemy()
+    public void KillEnemy()
     {
         StopAllCoroutines();
         gameObject.GetComponent<Collider2D>().enabled = false;
         animator.Play("death_animation");
         isDead = true;
         Destroy(gameObject, 1.2f);
-    }
-
-    public void EndCoroutines()
-    {
-        StopAllCoroutines();
     }
 
     public virtual void StopPatroling()

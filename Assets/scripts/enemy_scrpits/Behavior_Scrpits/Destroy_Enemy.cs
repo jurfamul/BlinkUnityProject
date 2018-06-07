@@ -6,6 +6,11 @@ public class Destroy_Enemy : MonoBehaviour {
 
     Animator animator;
 
+    private void Start()
+    {
+        animator = gameObject.GetComponent<Animator>();
+    }
+
     public void KillEnemy()
     {
         gameObject.GetComponent<Collider2D>().enabled = false;

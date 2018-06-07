@@ -27,7 +27,14 @@ public class Scroll_Camera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (transform.position.y <= 40f && !isGameOver)
+        if (!isGameOver && GameObject.Find("Scene_Manager").GetComponent<Player_Singleton>().getLives() == 0)
+        {
+            text.color = Color.red;
+            text.text = "Game Over";
+            gameObject.GetComponent<AudioSource>().Stop();
+            isGameOver = true;
+        }
+        else if (transform.position.y <= 40f && !isGameOver)
         {
             float scrollStep = scrollSpeed * Time.deltaTime;
             transform.Translate(transform.up * scrollStep);
@@ -38,13 +45,6 @@ public class Scroll_Camera : MonoBehaviour {
             text.text = "Level Complete";
             gameObject.GetComponent<AudioSource>().Stop();
             StartCoroutine("LoadNextScene");
-        }
-        else if (!isGameOver && transform.Find("Player_Ship").GetComponent<Animator>().GetBool("isDead"))
-        {
-            text.color = Color.red;
-            text.text = "Game Over";
-            gameObject.GetComponent<AudioSource>().Stop();
-            isGameOver = true;
         }
 	}
 

@@ -67,10 +67,7 @@ public class human_enemy_0_pathing : MonoBehaviour {
     {
         if (collision.gameObject.Equals(GameObject.Find("Player_Ship")))
         {
-            gameObject.GetComponent<Collider2D>().enabled = false;
-            animator.Play("death_animation");
-            isDead = true;
-            Destroy(gameObject, 1.2f);
+            KillEnemy();
         }
         else if (!collision.gameObject.Equals(GameObject.Find("Player_Ship")))
         {
@@ -83,15 +80,15 @@ public class human_enemy_0_pathing : MonoBehaviour {
     {
         if (collision.gameObject.Equals(GameObject.Find("Player_Ship")))
         {
-            gameObject.GetComponent<Collider2D>().enabled = false;
-            animator.Play("death_animation");
-            isDead = true;
-            Destroy(gameObject, 1.2f);
+            KillEnemy();
         }
     }
 
-    public void EndCoroutines()
+    public void KillEnemy()
     {
-        // this method is empty as this enemy has no coroutines. This method was added for error handling perposes.
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        animator.Play("death_animation");
+        isDead = true;
+        Destroy(gameObject, 1.2f);
     }
 }

@@ -8,7 +8,7 @@ public class Player_Control : MonoBehaviour {
 
     Animator animator;
     SpriteRenderer playerShip;
-    public GameObject sceneManager;
+    GameObject sceneManager;
     public Text[] counters;
     public float movementSpeed;
     public float blinkRadius;
@@ -25,11 +25,12 @@ public class Player_Control : MonoBehaviour {
         animator = GetComponent<Animator>();
         playerShip = GetComponent<SpriteRenderer>();
         currentBlinks = maxBlinks;
-        StartCoroutine(BlinkRecharge());
-        StartCoroutine(UpdateUI());
-        lives = sceneManager.GetComponent<Player_Singleton>().lives;
+        sceneManager = GameObject.Find("Scene_Manager");
+        lives = sceneManager.GetComponent<Player_Singleton>().getLives();
         points = sceneManager.GetComponent<Player_Singleton>().getPoints();
         isDead = false;
+        StartCoroutine(BlinkRecharge());
+        StartCoroutine(UpdateUI());
 	}
 	
 	// Update is called once per frame
@@ -138,12 +139,9 @@ public class Player_Control : MonoBehaviour {
                             if (hit.collider.gameObject.CompareTag("enemy"))
                             {
                                 GameObject enemy = hit.collider.gameObject;
-                                enemy.SendMessage("EndCoroutines");
-                                enemy.GetComponent<Collider2D>().enabled = false;
-                                enemy.GetComponent<Animator>().Play("death_animation");
                                 points = sceneManager.GetComponent<Player_Singleton>().addPoints(
                                     enemy.GetComponent<Enemy_Points_value>().points);
-                                Destroy(enemy, 1.2f);
+                                enemy.SendMessage("KillEnemy");
                             }
                         }
                     }
@@ -175,7 +173,7 @@ public class Player_Control : MonoBehaviour {
         animator.Play("player_death");
         gameObject.GetComponents<AudioSource>()[1].Play();
         sceneManager.GetComponent<Player_Singleton>().WasHit();
-        lives = sceneManager.GetComponent<Player_Singleton>().lives;
+        lives = sceneManager.GetComponent<Player_Singleton>().getLives();
     }
 
     protected virtual IEnumerator BlinkRecharge()

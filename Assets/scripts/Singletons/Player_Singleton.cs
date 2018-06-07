@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 public class Player_Singleton : MonoBehaviour {
 
     private static Player_Singleton playerSingleton;
-    public int lives;
-    public int points;
-    public float loadTime;
+    private int lives;
+    private int points;
+    private float loadTime;
 
     public static Player_Singleton Instance
     {
@@ -22,6 +22,9 @@ public class Player_Singleton : MonoBehaviour {
         if (playerSingleton == null)
         {
             playerSingleton = this;
+            lives = 3;
+            points = 0;
+            loadTime = 1.3f;
             // the whole point of making a singleton is to create something that can't be destroyed
             DontDestroyOnLoad(gameObject);
         }
@@ -40,6 +43,22 @@ public class Player_Singleton : MonoBehaviour {
         {
             lives = 0;
         }
+
+        if (lives == 0)
+        {
+            StartCoroutine("LoadStartScene");
+            Destroy(gameObject, 1.2f);
+        }
+        else
+        {
+            lives--;
+            StartCoroutine("ReloadScene");
+        } 
+    }
+
+    public int getLives()
+    {
+        return lives;
     }
 
     public int addPoints(int p)
@@ -51,5 +70,30 @@ public class Player_Singleton : MonoBehaviour {
     public int getPoints()
     {
         return points;
+    }
+
+    public IEnumerator ReloadScene()
+    {
+        float endTime = Time.time + loadTime;
+
+        while (Time.time < endTime)
+        {
+            yield return null;
+        }
+
+        SceneManager.LoadSceneAsync("Level 1");
+    }
+
+    public IEnumerator LoadStartScene()
+    {
+        float endTime = Time.time + loadTime;
+
+        while (Time.time < endTime)
+        {
+            yield return null;
+        }
+
+        SceneManager.LoadSceneAsync("Start_Screen");
+        SceneManager.UnloadSceneAsync("Level 1");
     }
 }

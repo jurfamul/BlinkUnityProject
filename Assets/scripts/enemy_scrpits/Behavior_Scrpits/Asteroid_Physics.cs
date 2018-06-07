@@ -40,10 +40,9 @@ public class Asteroid_Physics : MonoBehaviour {
         asteriod.AddForce(startingForce);
     }
 	
-	// Update is called once per frame
-	void Update () {
-
-		
-	}
+	public void DestroyObsticle()
+    {
+        Destroy(gameObject);
+    }
 
 }
