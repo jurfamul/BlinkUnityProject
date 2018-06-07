@@ -88,6 +88,7 @@ public class human_enemy_0_pathing : MonoBehaviour {
     {
         gameObject.GetComponent<Collider2D>().enabled = false;
         animator.Play("death_animation");
+        gameObject.GetComponent<AudioSource>().Play();
         isDead = true;
         Destroy(gameObject, 1.2f);
     }

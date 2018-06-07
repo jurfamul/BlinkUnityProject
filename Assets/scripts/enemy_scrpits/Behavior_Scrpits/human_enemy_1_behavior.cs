@@ -10,7 +10,6 @@ public class human_enemy_1_behavior : MonoBehaviour {
     public GameObject bullet;
     public float shots;
     private float endTime;
-    private bool isDead;
     Animator animator;
     SpriteRenderer sprite;
    
@@ -20,7 +19,6 @@ public class human_enemy_1_behavior : MonoBehaviour {
         animator = gameObject.GetComponent<Animator>();
         sprite = gameObject.GetComponent<SpriteRenderer>();
         path = StartCoroutine(FollowWaypoints());
-        isDead = false;
         StartTimer();
 	}
 
@@ -78,7 +76,7 @@ public class human_enemy_1_behavior : MonoBehaviour {
         tempBullet0.transform.position = new Vector3(tempBullet0.transform.position.x - 0.1f, tempBullet0.transform.position.y,
             tempBullet0.transform.position.z);
         GameObject tempBullet1 = Instantiate<GameObject>(bullet, transform, false);
-        gameObject.GetComponent<AudioSource>().Play();
+        gameObject.GetComponents<AudioSource>()[0].Play();
          
     }
 
@@ -87,7 +85,7 @@ public class human_enemy_1_behavior : MonoBehaviour {
         StopAllCoroutines();
         gameObject.GetComponent<Collider2D>().enabled = false;
         animator.Play("death_animation");
-        isDead = true;
+        gameObject.GetComponents<AudioSource>()[1].Play();
         Destroy(gameObject, 1.2f);
     }
 
@@ -102,8 +100,6 @@ public class human_enemy_1_behavior : MonoBehaviour {
         {
             foreach (Vector3 point in waypoints)
             {
-                Debug.Log("pathing to: " + point);
-                Debug.DrawLine(transform.position, point, Color.white);
                 Vector3 init = transform.position;
                 float step = 0;
                 Vector3 desination = new Vector3(point.x, point.y, -1.0f);

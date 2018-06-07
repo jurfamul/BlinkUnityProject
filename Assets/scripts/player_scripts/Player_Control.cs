@@ -8,7 +8,7 @@ public class Player_Control : MonoBehaviour {
 
     Animator animator;
     SpriteRenderer playerShip;
-    GameObject sceneManager;
+    GameObject gameModel;
     public Text[] counters;
     public float movementSpeed;
     public float blinkRadius;
@@ -25,9 +25,9 @@ public class Player_Control : MonoBehaviour {
         animator = GetComponent<Animator>();
         playerShip = GetComponent<SpriteRenderer>();
         currentBlinks = maxBlinks;
-        sceneManager = GameObject.Find("Scene_Manager");
-        lives = sceneManager.GetComponent<Player_Singleton>().getLives();
-        points = sceneManager.GetComponent<Player_Singleton>().getPoints();
+        gameModel = GameObject.Find("Game_Model");
+        lives = gameModel.GetComponent<Player_Singleton>().getLives();
+        points = gameModel.GetComponent<Player_Singleton>().getPoints();
         isDead = false;
         StartCoroutine(BlinkRecharge());
         StartCoroutine(UpdateUI());
@@ -78,16 +78,6 @@ public class Player_Control : MonoBehaviour {
             {
                 KillPlayer();
             }
-            /*if (lives == 0)
-            {
-                StartCoroutine("LoadStartScene");
-                Destroy(gameObject, 1.2f);
-            }
-            else
-            {
-                lives--;
-                StartCoroutine("ReloadScene");
-            }*/
         }
     }
 
@@ -100,16 +90,6 @@ public class Player_Control : MonoBehaviour {
             {
                 KillPlayer();
             }
-            /*if (lives == 0)
-            {
-                StartCoroutine("LoadStartScene");
-                Destroy(gameObject, 1.2f);
-            }
-            else
-            {
-                lives--;
-                StartCoroutine("ReloadScene");
-            } */
         }
     }
 
@@ -139,7 +119,7 @@ public class Player_Control : MonoBehaviour {
                             if (hit.collider.gameObject.CompareTag("enemy"))
                             {
                                 GameObject enemy = hit.collider.gameObject;
-                                points = sceneManager.GetComponent<Player_Singleton>().addPoints(
+                                points = gameModel.GetComponent<Player_Singleton>().addPoints(
                                     enemy.GetComponent<Enemy_Points_value>().points);
                                 enemy.SendMessage("KillEnemy");
                             }
@@ -172,8 +152,8 @@ public class Player_Control : MonoBehaviour {
         gameObject.GetComponent<Collider2D>().enabled = false;
         animator.Play("player_death");
         gameObject.GetComponents<AudioSource>()[1].Play();
-        sceneManager.GetComponent<Player_Singleton>().WasHit();
-        lives = sceneManager.GetComponent<Player_Singleton>().getLives();
+        gameModel.GetComponent<Player_Singleton>().WasHit();
+        lives = gameModel.GetComponent<Player_Singleton>().getLives();
     }
 
     protected virtual IEnumerator BlinkRecharge()
@@ -223,31 +203,6 @@ public class Player_Control : MonoBehaviour {
         }
         playerShip.material.color = Color.white;
     }
-
-    /*public IEnumerator ReloadScene()
-    {
-        float endTime = Time.time + loadTime;
-
-        while (Time.time < endTime)
-        {
-            yield return null;
-        }
-
-        SceneManager.LoadSceneAsync("Level 1");
-    }
-
-    public IEnumerator LoadStartScene()
-    {
-        float endTime = Time.time + loadTime;
-
-        while (Time.time < endTime)
-        {
-            yield return null;
-        }
-
-        SceneManager.LoadSceneAsync("Start_Screen");
-        SceneManager.UnloadSceneAsync("Level 1");
-    }*/
 
     public IEnumerator UpdateUI()
     {

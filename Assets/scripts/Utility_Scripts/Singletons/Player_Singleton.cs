@@ -9,7 +9,9 @@ public class Player_Singleton : MonoBehaviour {
     private static Player_Singleton playerSingleton;
     private int lives;
     private int points;
+    private int previousScore;
     private float loadTime;
+    private string nextLevel;
 
     public static Player_Singleton Instance
     {
@@ -25,6 +27,7 @@ public class Player_Singleton : MonoBehaviour {
             lives = 3;
             points = 0;
             loadTime = 1.3f;
+            nextLevel = "Credits";
             // the whole point of making a singleton is to create something that can't be destroyed
             DontDestroyOnLoad(gameObject);
         }
@@ -44,16 +47,16 @@ public class Player_Singleton : MonoBehaviour {
             lives = 0;
         }
 
-        if (lives == 0)
+        if (lives != 0)
         {
-            StartCoroutine("LoadStartScene");
-            Destroy(gameObject, 1.2f);
-        }
-        else
-        {
-            lives--;
             StartCoroutine("ReloadScene");
         } 
+    }
+
+    public void NextLevel(string levelName)
+    {
+        addPoints(lives * 2000);
+        StartCoroutine("LoadNextScene", levelName);
     }
 
     public int getLives()
@@ -70,6 +73,22 @@ public class Player_Singleton : MonoBehaviour {
     public int getPoints()
     {
         return points;
+    }
+
+    public void SetPreviousScore(int score)
+    {
+        previousScore = score;
+    }
+    public int GetPreviousScore()
+    {
+        return previousScore;
+    }
+
+    public void SaveAndLoad()
+    {
+        Score_Model scoreModel = GameObject.Find("I/O_Handler").GetComponent<Score_Model>();
+        scoreModel.LoadHighScore();
+        scoreModel.SaveScore();
     }
 
     public IEnumerator ReloadScene()
@@ -93,7 +112,21 @@ public class Player_Singleton : MonoBehaviour {
             yield return null;
         }
 
+        playerSingleton = null;
         SceneManager.LoadSceneAsync("Start_Screen");
-        SceneManager.UnloadSceneAsync("Level 1");
+        Destroy(gameObject);
+    }
+
+    public IEnumerator LoadNextScene(string levelName)
+    {
+        float endTime = Time.time + loadTime;
+
+        while (Time.time < endTime)
+        {
+            yield return null;
+        }
+
+        SceneManager.LoadSceneAsync(levelName);
+        
     }
 }

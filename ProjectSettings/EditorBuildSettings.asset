@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/levels/Level 1.unity
     guid: ad9ceeef2ed6aab45a34ae312a297d84
+  - enabled: 1
+    path: Assets/DynamicScrollView/Credits.unity
+    guid: 3a77dcdda3c3843c3bfd73912c97f2f5
   m_configObjects: {}

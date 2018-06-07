@@ -8,6 +8,7 @@ public class ButtonClick : MonoBehaviour {
 
 	public void OnClick(string levelName)
     {
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
         SceneManager.LoadScene(levelName);
     }
 }
